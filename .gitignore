@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# starter folder
+/starter
+
 # next.js
 /.next/
 /out/
