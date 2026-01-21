@@ -1,6 +1,10 @@
+import Reservation from "@/app/_components/Reservation";
+import Spinner from "@/app/_components/Spinner";
+import TextExpander from "@/app/_components/TextExpander";
 import { getCabin, getCabins } from "@/app/_lib/data-service";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { Suspense } from "react";
 
 // PLACEHOLDER DATA
 // const cabin = {
@@ -37,7 +41,16 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }) {
   const { cabinId } = await params;
+
   const cabin = await getCabin(cabinId);
+  // const settings = await getSettings();
+  // const bookedDates = await getBookedDatesByCabinId(cabinId);
+
+  // const [cabin, settings, bookedDates] = await Promise.all([
+  //   getCabin(cabinId),
+  //   getSettings(),
+  //   getBookedDatesByCabinId(cabinId),
+  // ]);
 
   const { id, name, maxCapacity, regularPrice, discount, image, description } =
     cabin;
@@ -59,7 +72,9 @@ export default async function Page({ params }) {
             Cabin {name}
           </h3>
 
-          <p className="text-lg text-primary-300 mb-10">{description}</p>
+          <p className="text-lg text-primary-300 mb-10">
+            <TextExpander>{description}</TextExpander>
+          </p>
 
           <ul className="flex flex-col gap-4 mb-7">
             <li className="flex gap-3 items-center">
@@ -87,9 +102,13 @@ export default async function Page({ params }) {
       </div>
 
       <div>
-        <h2 className="text-5xl font-semibold text-center">
-          Reserve today. Pay on arrival.
+        <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+          Reserve {name} today. Pay on arrival.
         </h2>
+
+        <Suspense fallback={<Spinner />}>
+          <Reservation cabin={cabin} />
+        </Suspense>
       </div>
     </div>
   );
